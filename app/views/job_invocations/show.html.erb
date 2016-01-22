@@ -7,18 +7,23 @@
 <% end %>
 
 <ul class="nav nav-tabs" data-tabs="tabs">
-  <li class="<%= job_invocation_active_tab(:overview, params) %>"><a href="#primary" data-toggle="tab"><%= _('Overview') %></a></li>
-  <li class="<%= job_invocation_active_tab(:hosts, params) %>"><a href="#hosts" data-toggle="tab"><%= _('Hosts') %></a></li>
-  <% unless @job_invocation.recurring_logic.nil? %><li><a href="#recurring_logic" data-toggle="tab"><%= _('Recurring logic') %></a></li><% end %>
+  <li class="active">
+    <a href="#primary" data-toggle="tab"><%= _('Overview') %></a>
+  </li>
+  <li>
+    <a href="#preview_templates" data-toggle="tab"><%= _('Preview templates') %></a>
+  </li>
+  <% if @job_invocation.recurring_logic.present? %>
+    <li><a href="#recurring_logic" data-toggle="tab"><%= _('Recurring logic') %></a></li>
+  <% end %>
 </ul>
 
 <div class="tab-content">
-  <div class="tab-pane <%= job_invocation_active_tab(:overview, params) %>" id="primary">
-    <%= render 'tab_overview', :job_invocation => @job_invocation %>
+  <div class="tab-pane active" id="primary">
+    <%= render 'tab_overview', :job_invocation => @job_invocation, :hosts => @hosts %>
   </div>
-
-  <div class="tab-pane <%= job_invocation_active_tab(:hosts, params) %>" id="hosts" data-refresh_required="<%= @job_invocation.resolved? ? '' : 'true' %>">
-    <%= render 'tab_hosts', :job_invocation => @job_invocation, :hosts => @hosts %>
+  <div class="tab-pane" id="preview_templates">
+    <%= render 'tab_preview_templates', :job_invocation => @job_invocation %>
   </div>
 
   <% unless @job_invocation.recurring_logic.nil? %>

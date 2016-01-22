@@ -99,7 +99,7 @@ function delayed_refresh(url, data){
 
 function job_invocation_refresh_data(){
   return {
-    hosts_needs_refresh: $("div#hosts").data('refresh_required'),
+    hosts_needs_refresh: $("table#hosts").data('refresh_required'),
     host_ids_needing_name_update: fetch_ids_of_hosts('name'),
     host_ids_needing_status_update: fetch_ids_of_hosts('status'),
     host_ids_needing_actions_update: fetch_ids_of_hosts('actions')
@@ -107,7 +107,7 @@ function job_invocation_refresh_data(){
 }
 
 function fetch_ids_of_hosts(attribute){
-  return $('div#hosts td.host_' + attribute + '[data-refresh_required="true"]').map(function() { return $(this).data('id') }).get();
+  return $('table#hosts td.host_' + attribute + '[data-refresh_required="true"]').map(function() { return $(this).data('id') }).get();
 }
 
 function regenerate_description(thing) {

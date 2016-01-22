@@ -1,0 +1,35 @@
+<div id="job-invocation-chart">
+  <div class="card-pf card-pf-accented card-pf-aggregate-status">
+    <h2 style="height: 18px;" class="card-pf-title">
+      <a href="#"><%= _('Results') %></a>
+    </h2>
+    <div class="card-pf-body">
+      <p id='status_chart'>
+        <%= job_invocation_chart(@job_invocation) %>
+      </p>
+      <p class="card-pf-aggregate-status-notifications">
+      <span class="card-pf-aggregate-status-notification">
+        <a id='success_count' href="#">
+          <%= job_invocation_success_status %>
+        </a>
+      </span>
+      <span class="card-pf-aggregate-status-notification">
+        <a id='failed_count' href="#">
+          <%= job_invocation_failed_status %>
+        </a>
+      </span>
+      <span class="card-pf-aggregate-status-notification">
+        <a id='pending_count' href="#">
+          <%= job_invocation_pending_status %>
+        </a>
+      </span>
+      <span class="card-pf-aggregate-status-notification">
+        <a id='cancelled_count' href="#">
+          <%= job_invocation_cancelled_status %>
+        </a>
+      </span>
+      </p>
+    </div>
+  </div>
+</div>
+
