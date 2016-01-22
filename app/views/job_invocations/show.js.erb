@@ -1,11 +1,14 @@
 $('div#title_action div.btn-group').html('<%= button_group(job_invocation_task_buttons(@job_invocation.task)).html_safe %>');
-$('div#status_chart').html('<%=j job_invocation_chart(@job_invocation) %>');
-$('div#status').flot_pie();
+<%= job_invocation_chart(@job_invocation).html_safe %>
+$('a#success_count').html('<%= job_invocation_success_status %>')
+$('a#failed_count').html('<%= job_invocation_failed_status %>')
+$('a#pending_count').html('<%= job_invocation_pending_status %>')
+$('a#cancelled_count').html('<%= job_invocation_cancelled_status %>')
 
 <% if params[:hosts_needs_refresh] == 'true' && @job_invocation.resolved? %>
-  var hosts_tab = $('div#hosts');
-  hosts_tab.html('<%=j render('tab_hosts', :job_invocation => @job_invocation, :hosts => @hosts) %>');
-  hosts_tab.data('refresh_required', '');
+  var hosts_table = $('table#hosts');
+  hosts_table.html('<%=j render('_hosts_table', :job_invocation => @job_invocation, :hosts => @hosts) %>');
+  hosts_table.data('refresh_required', '');
 <% end %>
 
 <% ['name', 'status', 'actions', 'provider'].each do |attribute| %>
