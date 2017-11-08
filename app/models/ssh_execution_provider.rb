@@ -18,23 +18,6 @@ class SSHExecutionProvider < RemoteExecutionProvider
       true
     end
 
-    def find_ip_or_hostname(host)
-      interfaces = effective_interfaces(host)
-      if host_setting(host, :remote_execution_connect_by_ip)
-        ip_interface = interfaces.find { |i| i.ip.present? }
-      end
-      if ip_interface
-        ip_interface.ip
-      else
-        fqdn_interface = interfaces.find { |i| i.fqdn.present? }
-        if fqdn_interface
-          fqdn_interface.fqdn
-        else
-          raise _('Could not find any suitable interface for execution')
-        end
-      end
-    end
-
     private
 
     def ssh_user(host)
