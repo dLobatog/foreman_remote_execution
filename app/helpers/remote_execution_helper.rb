@@ -55,14 +55,6 @@ module RemoteExecutionHelper
     end
   end
 
-  def task_failed?(task)
-    %w(warning error).include? task.result
-  end
-
-  def task_cancelled?(task)
-    task.execution_plan.errors.map(&:exception).any? { |exception| exception.class == ::ForemanTasks::Task::TaskCancelledException }
-  end
-
   def template_invocation_status(task)
     if task.nil?
       icon_text('question', 'N/A', :kind => 'fa')

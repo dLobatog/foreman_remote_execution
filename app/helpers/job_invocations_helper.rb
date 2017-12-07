@@ -49,40 +49,6 @@ module JobInvocationsHelper
     ]
   end
 
-  def job_invocation_failed_count(job_invocation)
-    job_invocation.task.sub_tasks.
-      select { |sub_task| task_failed? sub_task }.length
-  end
-
-  def job_invocation_cancelled_count(job_invocation)
-    job_invocation.task.sub_tasks.
-      select { |sub_task| task_cancelled? sub_task }.length
-  end
-
-  def job_invocation_success_count(job_invocation)
-    job_invocation.task.output['success_count'] || 0
-  end
-
-  def job_invocation_pending_count(job_invocation)
-    job_invocation.task.output['pending_count'] ||
-      job_invocation.task.sub_tasks.count
-  end
-
-  def job_invocation_status(invocation)
-    case invocation.status
-      when HostStatus::ExecutionStatus::QUEUED
-        _('queued')
-      when HostStatus::ExecutionStatus::RUNNING
-        _('running %s%') % invocation.progress
-      when HostStatus::ExecutionStatus::OK
-        _('succeeded')
-      when HostStatus::ExecutionStatus::ERROR
-        _('failed')
-      else
-        _('unknown status')
-    end
-  end
-
   def template_name_and_provider_link(template)
     template_name = content_tag(:strong, template.name)
     provider = template.provider.humanized_name

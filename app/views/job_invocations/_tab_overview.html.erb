@@ -9,15 +9,10 @@
   <% template_invocations.each do |template_invocation| %>
     <% if template_invocation.effective_user %>
       <%= minicard('user', template_invocation.effective_user,
-                   template_invocation.template.name + ' ' + _("effective user")) %>
-    <% end%>
+                   template_invocation.template.name + ' ' + _('effective user')) %>
+    <% end %>
     <% if template_invocation.input_values.present? %>
-      <%= _('following user inputs were provided') %>
-      <ul>
-        <% template_invocation.input_values.joins(:template_input).each do |input_value| %>
-          <li><b><%= input_value.template_input.name %></b>: <%= trunc_with_tooltip(input_value.value, 255) %></li>
-        <% end %>
-      </ul>
+      <%= render :partial => 'card_user_input', :locals => { :template_invocation => template_invocation } %>
     <% end %>
   <% end %>
   <%= minicard('cluster', job_invocation.total_hosts_count, _('Total hosts')) %>

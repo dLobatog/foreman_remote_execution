@@ -1,5 +1,7 @@
 <% title @job_invocation.description, trunc_with_tooltip(@job_invocation.description, 120) %>
 <% stylesheet 'job_invocations' %>
+<%= javascript_include_tag *webpack_asset_paths('remoteexecution', :extension => 'js'), "data-turbolinks-track" => true, 'defer' => 'defer' %>
+<% #webpacked_plugins_js_for :foreman_remote_execution %>
 <% javascript 'charts', 'template_invocation' %>
 
 <% if @job_invocation.task %>
