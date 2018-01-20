@@ -25,7 +25,7 @@ class InputTemplateRenderer
 
   def render
     @template.validate_unique_inputs!
-    render_safe(@template.template, ::Foreman::Renderer::ALLOWED_HELPERS + [ :input, :render_template, :preview?, :render_error ], :host => @host)
+    render_safe(@template.template, ::Foreman::Renderer::ALLOWED_HELPERS + [ :input, :insights_remediation, :render_template, :preview?, :render_error ], :host => @host)
   rescue => e
     self.error_message ||= _('error during rendering: %s') % e.message
     Rails.logger.debug e.to_s + "\n" + e.backtrace.join("\n")
