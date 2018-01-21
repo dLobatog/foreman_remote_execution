@@ -76,6 +76,20 @@ class JobInvocationsController < ApplicationController
     }
   end
 
+  def hosts_table
+    find_resource
+    binding.pry
+    render :json => {
+      :job_invocations => job_invocation_data(@job_invocation)[:columns],
+      :statuses => {
+        :success => job_invocation_success_count(@job_invocation),
+        :cancelled => job_invocation_cancelled_count(@job_invocation),
+        :failed => job_invocation_failed_count(@job_invocation),
+        :pending => job_invocation_pending_count(@job_invocation)
+      },
+    }
+  end
+
   def preview_hosts
     composer = prepare_composer
 
@@ -95,7 +109,7 @@ class JobInvocationsController < ApplicationController
         'create'
       when 'preview_hosts'
         'create'
-     when 'chart'
+     when 'chart', 'hosts_table'
         'view'
       else
         super

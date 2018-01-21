@@ -20,6 +20,7 @@ Rails.application.routes.draw do
     collection do
       post 'refresh'
       get 'chart'
+      get 'hosts_table'
       get 'preview_hosts'
       get 'auto_complete_search'
     end
