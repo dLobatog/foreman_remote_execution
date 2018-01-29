@@ -106,7 +106,6 @@ module RemoteExecutionHelper
     job_invocation = task.task_groups.find { |group| group.class == JobInvocationTaskGroup }.job_invocation
     task_authorizer = Authorizer.new(User.current, :collection => [task])
     buttons = []
-    buttons << link_to(_('Refresh'), {}, :class => 'btn btn-default', :title => _('Refresh this page'))
     if authorized_for(hash_for_new_job_invocation_path)
       buttons << link_to(_('Rerun'), rerun_job_invocation_path(:id => job_invocation.id),
                          :class => 'btn btn-default',

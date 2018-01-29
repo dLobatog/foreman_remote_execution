@@ -1,11 +1,11 @@
 <% template_invocations = job_invocation.pattern_template_invocations %>
 <div class='row'>
   <div class="col-xs-6 col-sm-6 col-md-6">
-    <%= render :partial => 'card_results', :job_invocation => job_invocation %>
+    <%= render :partial => 'card_results' %>
   </div>
 
   <div class='col-xs-12 col-sm-6 col-md-6'>
-  <%= render :partial => 'card_target_hosts', :job_invocation => job_invocation %>
+  <%= render :partial => 'card_target_hosts', :locals => { :job_invocation => job_invocation } %>
   <% template_invocations.each do |template_invocation| %>
     <% if template_invocation.effective_user %>
       <%= minicard('user', template_invocation.effective_user,
@@ -33,7 +33,9 @@
 </div>
 <hr/>
 <% if job_invocation.resolved? %>
-  <%= render :partial => 'hosts_table', :job_invocation => job_invocation, :hosts => hosts %>
+  <div id="hosts" data-refresh_required="true">
+    <%= render :partial => 'tab_hosts', :locals => { :job_invocation => job_invocation, :hosts => hosts } %>
+  </div>
 <% else %>
   <div class="alert alert-warning">
     <%= _("The dynamic query '#{job_invocation.targeting.search_query}' was not resolved yet. The list of hosts to which it would resolve now can be seen") %>

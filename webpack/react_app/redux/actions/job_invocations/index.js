@@ -19,25 +19,25 @@ const getJobInvocations = url => (dispatch) => {
 
   if (isDocumentVisible) {
     API.get(url)
-      .done(onGetJobInvocationsSuccess)
-      .fail(onGetJobInvocationsFailed)
-      .always(triggerPolling);
+      .then(onGetJobInvocationsSuccess)
+      .catch(onGetJobInvocationsFailed)
+      .then(triggerPolling);
   } else {
     // document is not visible, keep polling without api call
     triggerPolling();
   }
 
-  function onGetJobInvocationsSuccess(response) {
+  function onGetJobInvocationsSuccess({ data }) {
     dispatch({
       type: JOB_INVOCATIONS_GET_JOB_INVOCATIONS,
       payload: {
-        jobInvocations: response
+        jobInvocations: data
       },
     });
   }
 
   function onGetJobInvocationsFailed(error) {
-    if (error.status === 401) {
+    if (error.response.status === 401) {
       window.location.replace('/users/login');
     }
   }
