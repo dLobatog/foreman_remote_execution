@@ -7,15 +7,22 @@
   <div class='col-xs-12 col-sm-6 col-md-6'>
   <%= render :partial => 'card_target_hosts', :job_invocation => job_invocation %>
   <% template_invocations.each do |template_invocation| %>
-    <% if template_invocation.effective_user %>
-      <%= minicard('user', template_invocation.effective_user,
-                   template_invocation.template.name + ' ' + _('effective user')) %>
-    <% end %>
+    <div class="row">
+      <div class="col-xs-6 col-sm-6 col-md-6">
+        <% if template_invocation.effective_user %>
+          <%= minicard('user', template_invocation.effective_user,
+                       template_invocation.template.name + ' ' + _('effective user')) %>
+        <% end %>
+      </div>
+
+      <div class="col-xs-6 col-sm-6 col-md-6">
+        <%= minicard('cluster', job_invocation.total_hosts_count, _('Total hosts')) %>
+      </div>
+    </div>
     <% if template_invocation.input_values.present? %>
       <%= render :partial => 'card_user_input', :locals => { :template_invocation => template_invocation } %>
     <% end %>
   <% end %>
-  <%= minicard('cluster', job_invocation.total_hosts_count, _('Total hosts')) %>
   </div>
     <% if job_invocation.concurrency_level %>
       <b><%= _("Concurrency level limited to") %></b>: <%= job_invocation.concurrency_level %> <%= _('tasks at a time') %><br>
