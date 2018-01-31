@@ -3,7 +3,17 @@ module JobInvocationOutputHelper
       '31' => 'red',
       '32' => 'lightgreen',
       '33' => 'orange',
-      '0'  => 'default'
+      '34' => 'deepskyblue',
+      '35' => 'mediumpurple',
+      '36' => 'cyan',
+      '37' => 'grey',
+      '91' => 'red',
+      '92' => 'lightgreen',
+      '93' => 'yellow',
+      '94' => 'lightblue',
+      '95' => 'violet',
+      '96' => 'turquoise',
+      '0'  => 'default',
     }
   CONSOLE_COLOR.default = 'default'
 
