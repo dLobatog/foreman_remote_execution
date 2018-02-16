@@ -23,45 +23,60 @@ module Api
         assert_equal template['job_category'], @invocation.job_category
       end
 
-      test 'should create valid with job_template_id' do
-        attrs = { :job_category => @template.job_category, :name => 'RandomName', :job_template_id => @template.id,
-                  :targeting_type => 'static_query', :search_query => 'foobar'}
-        post :create, params: { :job_invocation => attrs }
+      context 'creation' do
+        setup do
+          @attrs = { :job_category => @template.job_category,
+                     :name => 'RandomName',
+                     :job_template_id => @template.id,
+                     :targeting_type => 'static_query',
+                     :search_query => 'foobar' }
+        end
 
-        invocation = ActiveSupport::JSON.decode(@response.body)
-        assert_equal attrs[:job_category], invocation['job_category']
-        assert_response :success
-      end
+        test 'should create valid with job_template_id' do
+          post :create, params: { job_invocation: @attrs }
 
-      test 'should create with description format overridden' do
-        attrs = { :job_category => @template.job_category, :name => 'RandomName', :job_template_id => @template.id,
-                  :targeting_type => 'static_query', :search_query => 'foobar', :description_format => 'format' }
-        post :create, params: { :job_invocation => attrs }
+          invocation = ActiveSupport::JSON.decode(@response.body)
+          assert_equal @attrs[:job_category], invocation['job_category']
+          assert_response :success
+        end
 
-        invocation = ActiveSupport::JSON.decode(@response.body)
-        assert_equal attrs[:description_format], invocation['description']
-      end
+        test 'should create with description format overridden' do
+          @attrs[:description_format] = 'format'
+          post :create, params: { job_invocation: @attrs }
 
-      test 'should create with recurrence' do
-        attrs = { :job_category => @template.job_category, :name => 'RandomName',
-                  :job_template_id => @template.id,:targeting_type => 'static_query',
-                  :search_query => 'foobar', :recurrence => {:cron_line => '5 * * * *'}}
+          invocation = ActiveSupport::JSON.decode(@response.body)
+          assert_equal @attrs[:description_format], invocation['description']
+        end
 
-        post :create, params: { :job_invocation => attrs }
-        invocation = ActiveSupport::JSON.decode(@response.body)
-        assert_equal invocation['mode'], 'recurring'
-        assert_response :success
-      end
+        test 'should create with recurrence' do
+          @attrs[:recurrence] = { cron_line: '5 * * * *' }
+          post :create, params: { job_invocation: @attrs }
+          invocation = ActiveSupport::JSON.decode(@response.body)
+          assert_equal invocation['mode'], 'recurring'
+          assert_response :success
+        end
 
-      test 'should create with schedule' do
-        attrs = { :job_category => @template.job_category, :name => 'RandomName',
-                  :job_template_id => @template.id,:targeting_type => 'static_query',
-                  :search_query => 'foobar', :scheduling => {:start_at => Time.now.to_s}}
+        test 'should create with schedule' do
+          @attrs[:scheduling] = { start_at: Time.now.to_s }
+          post :create, params: { job_invocation: @attrs }
+          invocation = ActiveSupport::JSON.decode(@response.body)
+          assert_equal invocation['mode'], 'future'
+          assert_response :success
+        end
 
-        post :create, params: { :job_invocation => attrs }
-        invocation = ActiveSupport::JSON.decode(@response.body)
-        assert_equal invocation['mode'], 'future'
-        assert_response :success
+        test 'should create with feature' do
+          feature = FactoryBot.create(:remote_execution_feature)
+          attrs = {
+            feature: feature.label,
+            host_ids: [1],
+            inputs: { 'plan_id': 3, 'organization_id': 10 }
+          }
+          JobInvocationComposer.expects(:for_feature).with(
+            attrs[:feature], anything, has_entries('plan_id' => 3, 'organization_id' => 10)
+          ).returns(OpenStruct.new(trigger!: true, job_invocation: @invocation))
+          post :create, params: { job_invocation: attrs }
+          assert_response :success
+        end
       end
 
       test 'should provide output for delayed task' do
