@@ -12,14 +12,34 @@ class JobInvocationsController < ApplicationController
         :bookmark_id => params[:bookmark_id]
       }
     }
-
-    if (template = JobTemplate.find_by(id: params[:template_id]))
+    template = (
+      JobTemplate.find_by(id: params[:template_id]) ||
+      RemoteExecutionFeature.find_by_label(params[:feature]).job_template
+    )
+    if template.present?
       ui_params[:job_invocation] = {
         :job_category => template.job_category,
         :providers => {
-          template.provider_type => {:job_template_id => template.id}
+          template.provider_type => {
+            :job_template_id => template.id
+          }
         }
       }
+      if params[:inputs].present?
+        input_values = params[:inputs].permit!.to_hash.
+          reduce({}) do |acc, input|
+          acc.merge!(
+            template.template_inputs.find_by_name(input.first).id => {
+              'value' => input.last
+            }
+          )
+        end
+        ui_params[:job_invocation][:providers][template.provider_type][:job_templates] = {
+          template.id => {
+            :input_values => input_values
+          }
+        }
+      end
     end
 
     @composer = JobInvocationComposer.from_ui_params(ui_params)
@@ -105,7 +125,7 @@ class JobInvocationsController < ApplicationController
 
   def prepare_composer
     if params[:feature].present?
-      JobInvocationComposer.for_feature(params[:feature], params[:host_ids], {})
+      JobInvocationComposer.for_feature(params[:feature], params[:host_ids], params[:inputs])
     else
       # triggering_params is a Hash
       #   when a hash is merged into ActionController::Parameters,
